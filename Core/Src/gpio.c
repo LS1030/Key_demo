@@ -67,7 +67,6 @@ void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI3_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-
 }
 
 /* USER CODE BEGIN 2 */
@@ -79,37 +78,43 @@ void MX_GPIO_Init(void)
   */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
- if (GPIO_Pin == KEY0_Pin)
- {
-   GPIO_PinState bitstatus;
-   bitstatus = HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin);
-   if(bitstatus == GPIO_PIN_SET)
-   {
-       HAL_Delay(1);
-       if (bitstatus == HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin))
-       {
-         HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);  //LED0 ON
-         Key_Flag = 0;
-       }
-       else
-       {
-         return;
-       }
-   }
-   else if(bitstatus == GPIO_PIN_RESET)
-   {
-       HAL_Delay(1);
-       if (bitstatus == HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin))
-       {
-         HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);  //LED0 OFF
-         Key_Flag = 1;
-       }
-       else
-       {
-         return;
-       }
-   }
- }
+  if (GPIO_Pin == KEY0_Pin)
+  {
+    GPIO_PinState bitstatus;
+    bitstatus = HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin);
+    if (bitstatus == GPIO_PIN_SET)
+    {
+      HAL_Delay(5);
+      if (bitstatus == HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin))
+      {
+        HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET); //LED0 ON
+        Key_Flag = 0;
+      }
+      else
+      {
+        return;
+      }
+    }
+    else if (bitstatus == GPIO_PIN_RESET)
+    {
+      HAL_Delay(5);
+      if (bitstatus == HAL_GPIO_ReadPin(KEY0_GPIO_Port, KEY0_Pin))
+      {
+        HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET); //LED0 OFF
+        Key_Flag = 1;
+      }
+      else
+      {
+        return;
+      }
+    }
+  }
+
+  /* Clean EXIT again */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_Pin) != 0x00u)
+  {
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+  }
 }
 /* USER CODE END 2 */
 
